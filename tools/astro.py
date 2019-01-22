@@ -49,7 +49,7 @@ class AstroConversion:
             sys.exit(1)
 
     @classmethod
-    def to_skycoord(cls, theta=None, phi=None, coordsys=ICRS, time=None):
+    def to_skycoord(cls, theta=None, phi=None, time=None, coordsys=ICRS):
         """
         Transforms an input direction given in a local site from alt-az system (theta, phi) to
         `~astropy.coordinates.SkyCoord` sky coordinates.
@@ -74,9 +74,9 @@ class AstroConversion:
 
         :param theta: local azimuth of the event
         :param phi: local altitude of the event
+        :param time: time to use to compute the AltAz coordinates, instance of `~astropy.time.Time`
         :param coordsys: coordinate system to use, can be an instance of `~astropy.coordinates` such as ICRS,
                          FK5, etc...
-        :param time: time to use to compute the AltAz coordinates, instance of `~astropy.time.Time`
         :return: sky coordinates in 'ICRS'
         """
         az = -Angle(phi)
