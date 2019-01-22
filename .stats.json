@@ -1,0 +1,1 @@
+{"lines": {"blank": 2, "comment": 4, "docstring": 18, "code": 5}, "pep8": {"count": 1, "categories": [["1", "E501", "line too long (88 > 79 characters)"]]}, "doc": {"classes": {}, "functions": {}, "modules": {}}}
