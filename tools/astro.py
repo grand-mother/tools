@@ -32,6 +32,7 @@ class AstroConversion:
     This class handles astronomical conversion, such as coordinate transformation from alt-az on local site to sky coordinates.
 
     @todo Convert from print to logger
+    @todo Move time from _init_ to to_skycoord
     """
     @classmethod
     def __init__(cls, referencesystem=None, longitude=None, latitude=None, altitude=None, ra=None, dec=None, time=None):
@@ -44,7 +45,8 @@ class AstroConversion:
         cls.time = Time(time)
 
         if cls.referencesystem == 'local' and cls.longitude is not None and cls.latitude is not None and cls.altitude is not None:
-            cls.localsite = EarthLocation.from_geodetic(lon=cls.longitude, lat=cls.latitude, height=cls.altitude, ellipsoid='WGS84')
+            cls.localsite = EarthLocation.from_geodetic(lon=cls.longitude, lat=cls.latitude, height=cls.altitude,
+                                                        ellipsoid='WGS84')
         else:
             print('AstroConversion: can not create a local site')
             sys.exit(1)
@@ -53,7 +55,7 @@ class AstroConversion:
     @classmethod
     def to_skycoord(cls, theta=None, phi=None, sys=ICRS):
         """
-        to_skycoord transforms an input direction in a local site from AltAz (theta, phi) to sky coordinates.
+        to_skycoord transforms an input direction given in a local site from alt-az system (theta, phi) to `~astropy.coordinates.SkyCoord` sky coordinates.
 
         GRAND convention: receiver convention: phi is oriented West of North, theta from zenith
 
@@ -82,3 +84,13 @@ class AstroConversion:
         alt = Angle(zenith)-Angle(theta)
         c = AltAz(az=az, alt=alt, obstime=cls.time, location=cls.localsite)
         return c.transform_to(sys)
+
+
+    @classmethod
+    def lst(cls, time):
+        """
+        @todo Implement computation of local sidereal time
+        :param time:
+        :return:
+        """
+        pass
