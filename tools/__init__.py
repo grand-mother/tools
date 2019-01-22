@@ -27,3 +27,4 @@ except ImportError:
     __githash__ = None
 
 # Initialise the package below
+from . import astro

@@ -21,7 +21,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 import sys
 
 from astropy import units
-from astropy.coordinates import EarthLocation, AltAz, Angle
+from astropy.coordinates import EarthLocation, AltAz, Angle, ICRS
 from astropy.time import Time
 
 
@@ -51,7 +51,7 @@ class AstroConversion:
 
 
     @classmethod
-    def to_skycoord(cls, theta=None, phi=None, sys='ICRS'):
+    def to_skycoord(cls, theta=None, phi=None, sys=ICRS):
         """
         to_skycoord transforms an input direction in a local site from AltAz (theta, phi) to sky coordinates.
 
