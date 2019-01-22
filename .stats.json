@@ -1,1 +1,1 @@
-{"lines": {"blank": 2, "comment": 4, "docstring": 18, "code": 5}, "pep8": {"count": 1, "categories": [["1", "E501", "line too long (88 > 79 characters)"]]}, "doc": {"classes": {}, "functions": {}, "modules": {}}}
+{"lines": {"blank": 9, "comment": 5, "docstring": 68, "code": 31}, "pep8": {"count": 9, "categories": [["1", "E225", "missing whitespace around operator"], ["1", "E303", "too many blank lines (2)"], ["7", "E501", "line too long (88 > 79 characters)"]]}, "doc": {"classes": {}, "functions": {}, "modules": {}}}
