@@ -43,7 +43,7 @@ class AstroConversion:
         cls.dec = dec
         cls.time = Time(time)
 
-        if cls.referencesystem=='local' and cls.longitude is not None and cls.latitude is not None and cls.altitude is not None:
+        if cls.referencesystem == 'local' and cls.longitude is not None and cls.latitude is not None and cls.altitude is not None:
             cls.localsite = EarthLocation.from_geodetic(lon=cls.longitude, lat=cls.latitude, height=cls.altitude, ellipsoid='WGS84')
         else:
             print('AstroConversion: can not create a local site')
@@ -51,7 +51,7 @@ class AstroConversion:
 
 
     @classmethod
-    def to_skycoord(self, theta=None, phi=None, sys='ICRS'):
+    def to_skycoord(cls, theta=None, phi=None, sys='ICRS'):
         """
         to_skycoord transforms an input direction in a local site from AltAz (theta, phi) to sky coordinates.
 
@@ -62,14 +62,14 @@ class AstroConversion:
         |
         |
         | theta
-        |- /
-        | /
-        |/
+        |- /.
+        | / .
+        |/  .
         --------------> y=West
-       / /
-      /-  phi
-     /
-    /
+       / .  .
+      / / . .
+     /-     .
+    /   phi
    |/
   x=North
 
