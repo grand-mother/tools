@@ -12,3 +12,6 @@ build
 
 # Ignore temporary coverage reports
 .coverage
+
+# Ignore PyCharm stuff
+.idea
