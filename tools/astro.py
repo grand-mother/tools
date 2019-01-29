@@ -26,12 +26,12 @@ from astropy.time import Time
 
 class AstroConversion:
     """
-    AstroConversion
-
     This class handles astronomical conversion, such as coordinate transformation from alt-az on local site to sky
     coordinates.
 
-    @todo Convert from print to logger
+    Todo
+    ----
+    - [ ] Convert from print to logger (grand-mother/tools#1) 
     """
     @classmethod
     def __init__(cls, longitude=None, latitude=None, altitude=None, ra=None, dec=None):
@@ -50,34 +50,46 @@ class AstroConversion:
 
     @classmethod
     def to_skycoord(cls, theta=None, phi=None, time=None, coordsys=ICRS):
-        """
+        r"""
         Transforms an input direction given in a local site from alt-az system (theta, phi) to
         `~astropy.coordinates.SkyCoord` sky coordinates.
 
         GRAND convention: receiver convention: phi is oriented West of North, theta from zenith
 
-             z=Up
-             /\
-             |
-             |
-             | theta
-             |- /.
-             | / .
-             |/  .
-             --------------> y=West
-            / .  .
-           / / . .
-          /-     .
-         /   phi
-        |/
-       x=North
+        ```
+              z=Up
+              /\
+              |
+              |
+              | theta
+              |- /.
+              | / .
+              |/  .
+              --------------> y=West
+             / .  .
+            / / . .
+           /-     .
+          /   phi
+         |/
+        x=North
+        ```
 
-        :param theta: local azimuth of the event
-        :param phi: local altitude of the event
-        :param time: time to use to compute the AltAz coordinates, instance of `~astropy.time.Time`
-        :param coordsys: coordinate system to use, can be an instance of `~astropy.coordinates` such as ICRS,
+        Parameters
+        ----------
+        theta : array, scalar, Quantity, Angle
+            Local azimuth of the event
+        phi : array, scalar, Quantity, Angle
+            Local altitude of the event
+        time : sequence, ndarray, number, str, bytes, or Time object
+            Time to use to compute the AltAz coordinates, instance of `~astropy.time.Time`
+        coordsys: class or frame object or SkyCoord object
+            Coordinate system to use, can be an instance of `~astropy.coordinates` such as ICRS,
                          FK5, etc...
-        :return: sky coordinates in 'ICRS'
+
+        Returns
+        -------
+        ICRS
+            Sky coordinates in 'ICRS'
         """
         az = -Angle(phi)
         zenith = '90d'
@@ -90,9 +102,21 @@ class AstroConversion:
     def localsiderealtime(cls, time):
         """
         Provide the local sidereal time
-        @todo Implement computation of local sidereal time
-        :param time: input time, in whatever time scale supported by `~astropy.time.Time`
-        :return: local sidereal time
+
+        Todo
+        ----
+        - [ ] Implement computation of local sidereal time
+              (grand-mother/tools#2)
+
+        Parameters
+        ----------
+        time : sequence, ndarray, number, str, bytes, or Time object
+            Input time, in whatever time scale supported by `~astropy.time.Time`
+
+        Returns
+        -------
+        Longitude
+            Local sidereal time
         """
         t = Time(time, location=cls.localsite)
         return t.sidereal_time('apparent')
