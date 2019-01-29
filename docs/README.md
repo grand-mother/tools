@@ -1,5 +1,6 @@
 # Tools
-_Generic tools (topographic transformations, data encapsulation, astronomical conversion)_
+_Generic tools (topographic transformations, data encapsulation, astronomical
+conversion)_
 
 ## Description
 
@@ -8,16 +9,19 @@ _Generic tools (topographic transformations, data encapsulation, astronomical co
 
 ## Installation
 
+_GRAND packages require python3.7. If can be installed from the
+[tarball](https://www.python.org/downloads) on Linux or with brew on OSX._
+
 The latest stable version of this package can be installed from [PyPi][PYPI]
 using [pip][PIP], e.g. as:
 ```bash
-pip install --user grand-tools
+pip3 install --user grand-framework-example
 ```
 
 Alternatively one can also install the latest development commit directly from
 [GitHub][GITHUB], as:
 ```bash
-pip install --user git+https://github.com/grand-mother/tools.git@master
+pip3 install --user git+https://github.com/grand-mother/framework-example.git@master
 ```
 
 

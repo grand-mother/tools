@@ -4,13 +4,15 @@
     One should edit the docs/README.md file instead.
 -->
 
-[![Coding style](https://img.shields.io/badge/pep8-70%25-green.svg)](https://github.com/grand-mother/tools/blob/master/docs/.stats.json)
+[![Coding style](https://img.shields.io/badge/pep8-71%25-green.svg)](https://github.com/grand-mother/tools/blob/master/docs/.stats.json)
 [![Code coverage](https://codecov.io/gh/grand-mother/tools/branch/master/graph/badge.svg)](https://codecov.io/gh/grand-mother/tools)
 [![Build status](https://travis-ci.com/grand-mother/tools.svg?branch=master)](https://travis-ci.com/grand-mother/tools)
+[![Documentation](https://img.shields.io/badge/docs-17%25-orange.svg)](https://grand-mother.github.io/site/reports.html?tools/docs)
 [![PyPi version](https://img.shields.io/pypi/v/g.svg)](https://pypi.org/project/grand-tools)
 
 # Tools
-_Generic tools (topographic transformations, data encapsulation, astronomical conversion)_
+_Generic tools (topographic transformations, data encapsulation, astronomical
+conversion)_
 
 ## Description
 
@@ -19,16 +21,19 @@ _Generic tools (topographic transformations, data encapsulation, astronomical co
 
 ## Installation
 
+_GRAND packages require python3.7. If can be installed from the
+[tarball](https://www.python.org/downloads) on Linux or with brew on OSX._
+
 The latest stable version of this package can be installed from [PyPi][PYPI]
 using [pip][PIP], e.g. as:
 ```bash
-pip install --user grand-tools
+pip3 install --user grand-framework-example
 ```
 
 Alternatively one can also install the latest development commit directly from
 [GitHub][GITHUB], as:
 ```bash
-pip install --user git+https://github.com/grand-mother/tools.git@master
+pip3 install --user git+https://github.com/grand-mother/framework-example.git@master
 ```
 
 
