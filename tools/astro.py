@@ -103,11 +103,6 @@ class AstroConversion:
         """
         Provide the local sidereal time
 
-        Todo
-        ----
-        - [ ] Implement computation of local sidereal time
-              (grand-mother/tools#2)
-
         Parameters
         ----------
         time : sequence, ndarray, number, str, bytes, or Time object
