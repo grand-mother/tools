@@ -15,13 +15,13 @@ _GRAND packages require python3.7. If can be installed from the
 The latest stable version of this package can be installed from [PyPi][PYPI]
 using [pip][PIP], e.g. as:
 ```bash
-pip3 install --user grand-framework-example
+pip3 install --user grand-tools
 ```
 
 Alternatively one can also install the latest development commit directly from
 [GitHub][GITHUB], as:
 ```bash
-pip3 install --user git+https://github.com/grand-mother/framework-example.git@master
+pip3 install --user git+https://github.com/grand-mother/tools.git@master
 ```
 
 

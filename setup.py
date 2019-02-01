@@ -25,7 +25,9 @@ if __name__ == "__main__":
         # Vanilla setuptools.setup arguments can be added below,
         # e.g. `entry_points` for executables or `data_files`
         install_requires = (
-            "astropy>=3.0.0"
-        )
+            "grand-shared-libs",
+            "astropy>=3.0.0"),
+        dependency_links = (
+            "git+https://github.com/grand-mother/framework-example.git@master")
     )
 
