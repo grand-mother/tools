@@ -4,10 +4,10 @@
     One should edit the docs/README.md file instead.
 -->
 
-[![Coding style](https://img.shields.io/badge/pep8-67%25-green.svg)](https://github.com/grand-mother/tools/blob/master/docs/.stats.json)
+[![Coding style](https://img.shields.io/badge/pep8-74%25-green.svg)](https://github.com/grand-mother/tools/blob/master/docs/.stats.json)
 [![Code coverage](https://codecov.io/gh/grand-mother/tools/branch/master/graph/badge.svg)](https://codecov.io/gh/grand-mother/tools)
 [![Build status](https://travis-ci.com/grand-mother/tools.svg?branch=master)](https://travis-ci.com/grand-mother/tools)
-[![Documentation](https://img.shields.io/badge/docs-62%25-yellowgreen.svg)](https://grand-mother.github.io/site/reports.html?tools/docs)
+[![Documentation](https://img.shields.io/badge/docs-42%25-yellow.svg)](https://grand-mother.github.io/site/reports.html?tools/docs)
 [![PyPi version](https://img.shields.io/pypi/v/g.svg)](https://pypi.org/project/grand-tools)
 
 # Tools
@@ -27,13 +27,13 @@ _GRAND packages require python3.7. If can be installed from the
 The latest stable version of this package can be installed from [PyPi][PYPI]
 using [pip][PIP], e.g. as:
 ```bash
-pip3 install --user grand-framework-example
+pip3 install --user grand-tools
 ```
 
 Alternatively one can also install the latest development commit directly from
 [GitHub][GITHUB], as:
 ```bash
-pip3 install --user git+https://github.com/grand-mother/framework-example.git@master
+pip3 install --user git+https://github.com/grand-mother/tools.git@master
 ```
 
 
