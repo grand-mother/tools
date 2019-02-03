@@ -82,9 +82,10 @@ class ENU(BaseCoordinateFrame):
 def itrs_to_enu(itrs, enu):
     """Compute the transformation from ITRS to ENU coordinates"""
     c = itrs.cartesian
-    c._x -= enu._origin.x
-    c._y -= enu._origin.y
-    c._z -= enu._origin.z
+    if c.x.unit is not u.one:
+        c._x -= enu._origin.x
+        c._y -= enu._origin.y
+        c._z -= enu._origin.z
     r = c.transform(enu._basis.T)
 
     return enu.realize_frame(r)
@@ -94,9 +95,10 @@ def itrs_to_enu(itrs, enu):
 def enu_to_itrs(enu, itrs):
     """Compute the transformation from ENU to ITRS coordinates"""
     r = enu.cartesian.transform(enu._basis)
-    r._x += enu._origin.x
-    r._y += enu._origin.y
-    r._z += enu._origin.z
+    if r.x.unit is not u.one:
+        r._x += enu._origin.x
+        r._y += enu._origin.y
+        r._z += enu._origin.z
     r = CartesianRepresentation(r.x, r.y, r.z)
 
     return itrs.realize_frame(r)

@@ -131,6 +131,18 @@ class CoordinatesTest(unittest.TestCase):
             self.assertQuantity(itrs0.y, itrs1.y, u.m, 4)
             self.assertQuantity(itrs0.z, itrs1.z, u.m, 4)
 
+        # Check the unit vector case
+        enu = ENU(x=0, y=0, z=1, location=location)
+        r = enu.transform_to(ITRS)
+
+        self.assertQuantity(r.cartesian.norm(), 1, u.one, 6)
+
+        itrs = ITRS(x=0, y=0, z=1)
+        enu = ENU(location=location)
+        enu = itrs.transform_to(enu)
+
+        self.assertQuantity(enu.cartesian.norm(), 1, u.one, 6)
+
 
 if __name__ == "__main__":
     unittest.main()
