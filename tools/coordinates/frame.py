@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-GRAND extension of astropy.coordinates
+Extra frame(s) for astropy.coordinates
 
 Copyright (C) 2018 The GRAND collaboration
 
@@ -38,28 +38,56 @@ __all__ = ["ENU"]
 
 
 class ENU(BaseCoordinateFrame):
+    """Local geographic frames on the Earth, oriented along cardinal directions
+    """
+
     default_representation = CartesianRepresentation
+    """Default representation of local frames"""
 
     location = Attribute(default=None)
-    """The origin of the local frame"""
+    """The origin on Earth of the local frame"""
 
     orientation = Attribute(default=("E", "N", "U"))
-    """The orientation of the local frame"""
+    """The orientation of the local frame, as cardinal directions"""
 
     obstime = TimeAttribute(default=DEFAULT_OBSTIME)
-    """Observation time"""
+    """The observation time"""
 
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, *args, location=None, orientation=None, **kwargs):
+        """Initialisation of a local frame
+
+        Parameters
+        ----------
+        *args
+            Any representation of the frame data, e.g. x, y, and z coordinates
+        location : EarthLocation
+            The location on Earth of the local frame origin
+        orientation : sequence of str, optional
+            The cardinal directions of the x, y, and z axis (default: E, N, U)
+        **kwargs
+            Any extra BaseCoordinateFrame arguments
+
+        Raises
+        ------
+        ValueError
+            The local frame orientation is not valid
+        """
+
+        # Do the base initialisation
+        location = self.location if location is None else location
+        orientation = self.orientation if orientation is None else orientation
+
+        super().__init__(*args, location=location, orientation=orientation,
+                         **kwargs)
 
         # Set the transform parameters
         itrs = self._location.itrs
         geo = itrs.represent_as(GeodeticRepresentation)
         latitude, longitude = geo.latitude / u.deg, geo.longitude / u.deg
 
-        def vector(tag):
-            tag = tag[0].upper()
+        def vector(name):
+            tag = name[0].upper()
             if tag == "E":
                 return turtle.ecef_from_horizontal(latitude, longitude, 90, 0)
             elif tag == "W":
@@ -72,6 +100,8 @@ class ENU(BaseCoordinateFrame):
                 return turtle.ecef_from_horizontal(latitude, longitude, 0, 90)
             elif tag == "D":
                 return turtle.ecef_from_horizontal(latitude, longitude, 0, -90)
+            else:
+                raise ValueError(f"invalid frame orientation `{name}`")
 
         ux = vector(self._orientation[0])
         uy = vector(self._orientation[1])
@@ -83,7 +113,20 @@ class ENU(BaseCoordinateFrame):
 
 @frame_transform_graph.transform(FunctionTransform, ITRS, ENU)
 def itrs_to_enu(itrs, enu):
-    """Compute the transformation from ITRS to ENU coordinates"""
+    """Compute the transformation from ITRS to ENU coordinates
+
+    Parameters
+    ----------
+    itrs : ITRS
+        The initial coordinates in ITRS
+    enu : ENU
+        The ENU frame to transform to
+
+    Returns
+    -------
+    ENU
+        The ENU frame with transformed coordinates
+    """
     c = itrs.cartesian
     if c.x.unit is not u.one:
         c._x -= enu._origin.x
@@ -96,7 +139,20 @@ def itrs_to_enu(itrs, enu):
 
 @frame_transform_graph.transform(FunctionTransform, ENU, ITRS)
 def enu_to_itrs(enu, itrs):
-    """Compute the transformation from ENU to ITRS coordinates"""
+    """Compute the transformation from ENU to ITRS coordinates
+
+    Parameters
+    ----------
+    enu : ENU
+        The initial coordinates in ENU
+    itrs : ITRS
+        The ITRS frame to transform to
+
+    Returns
+    -------
+    ITRS
+        The ITRS frame with transformed coordinates
+    """
     r = enu.cartesian.transform(enu._basis)
     if r.x.unit is not u.one:
         r._x += enu._origin.x

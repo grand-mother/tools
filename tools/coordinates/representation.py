@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-GRAND extension of astropy.coordinates
+Extra representations for astropy.coordinates
 
 Copyright (C) 2018 The GRAND collaboration
 
@@ -26,19 +26,50 @@ import numpy
 import astropy.units as u
 from astropy.coordinates import BaseRepresentation, CartesianRepresentation
 
-__all__ = ["GeodeticRepresentation"]
+__all__ = ["GeodeticRepresentation", "HorizontalRepresentation"]
 
 
 class GeodeticRepresentation(BaseRepresentation):
-    """Geodetic coordinates representation assuming WGS84 ellipsoid"""
+    """Geodetic coordinates representation w.r.t. the WGS84 ellipsoid"""
 
     attr_classes = OrderedDict([["latitude", u.Quantity],
                                 ["longitude", u.Quantity],
                                 ["height", u.Quantity]])
+    """Attributes of a Geodetic representation"""
+
+
+    def __init__(self, latitude, longitude, height, copy=True):
+        """Initialise a geodetic representation
+
+        Parameters
+        ----------
+        latitude : Quantity or str
+            The latitude angle measured clockwise, w.r.t. the xOy plane
+        longitude : Quantity or str
+            The longitude angle measured counter-clockwise, w.r.t. the x-axis
+        height : Quantity or str
+            The height above the WGS84 ellipsoid
+
+        copy : bool, optional
+            If `True` (default), arrays will be copied rather than referenced
+        """
+        super().__init__(latitude, longitude, height, copy=copy)
 
 
     @classmethod
     def from_cartesian(cls, cart):
+        """Generate a Geodetic representation from a Cartesian one
+
+        Parameters
+        ----------
+        cart : CartesianRepresentation
+            The cartesian coordinates of a point, e.g. in ITRS
+
+        Returns
+        -------
+        GeodeticRepresentation
+            The corresponding geodetic coordinates
+        """
         m1 = 1 / u.m
         x, y, z = map(lambda v: v * m1, (cart.x, cart.y, cart.z))
         if x.size > 1:
@@ -52,6 +83,13 @@ class GeodeticRepresentation(BaseRepresentation):
 
 
     def to_cartesian(self):
+        """Generate a Cartesian representation from a Geodetic one
+
+        Returns
+        -------
+        CartesianRepresentation
+            The Cartesian coordinates corresponding to this representation
+        """
         d1, m1 = 1 / u.deg, 1 / u.m
         ecef = turtle.ecef_from_geodetic(self.latitude * d1,
                                          self.longitude * d1, self.height * m1)
@@ -66,12 +104,51 @@ class GeodeticRepresentation(BaseRepresentation):
 class HorizontalRepresentation(BaseRepresentation):
     """Horizontal angular representation, for unit vectors"""
 
+
     attr_classes = OrderedDict([["azimuth", u.Quantity],
                                 ["elevation", u.Quantity]])
+    """Attributes of a Horizontal representation"""
+
+
+    def __init__(self, azimuth, elevation, copy=True):
+        """Initialise a Horizontal angular representation of a unit vector
+
+        Parameters
+        ----------
+        azimuth : Quantity or str
+            The azimuth angle measured clockwise, w.r.t. the y axis
+        elevation : Quantity or str
+            The elevation angle measured clockwise, w.r.t. the xOy plane
+
+        copy : bool, optional
+            If `True` (default), arrays will be copied rather than referenced
+        """
+        super().__init__(azimuth, elevation, copy=copy)
 
 
     @classmethod
     def from_cartesian(cls, cart):
+        """Generate a Horizontal angular representation from a Cartesian unit
+        vector
+
+        **Note** that the Cartesian unit vector **must** be dimensioneless.
+        Though it is not checked if the norm of the vector is indeed unity.
+
+        Parameters
+        ----------
+        cart : CartesianRepresentation
+            The cartesian coordinates of the unit vector
+
+        Returns
+        -------
+        HorizontalRepresentation
+            The corresponding angular coordinates
+
+        Raises
+        ------
+        ValueError
+            The cartesian representation is not dimensioneless
+        """
         if ((cart.x.unit is not u.one) or (cart.y.unit is not u.one) or
             (cart.z.unit is not u.one)):
             raise ValueError("coordinates must be dimensionless")
@@ -90,6 +167,14 @@ class HorizontalRepresentation(BaseRepresentation):
 
 
     def to_cartesian(self):
+        """Generate a Cartesian unit vector from this Horizontal angular
+        representation
+
+        Returns
+        -------
+        CartesianRepresentation
+            The corresponding cartesian unit vector
+        """
         theta = 90 * u.deg - self.elevation
         phi = 90 * u.deg - self.azimuth
         ct, st = numpy.cos(theta), numpy.sin(theta)
