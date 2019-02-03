@@ -25,8 +25,11 @@ from shared_libs import turtle
 import numpy
 import astropy.units as u
 from astropy.coordinates import Attribute, BaseCoordinateFrame,                \
-    CartesianRepresentation, FunctionTransform, ITRS, RepresentationMapping,   \
-    TimeAttribute, frame_transform_graph
+                                CartesianRepresentation,                       \
+                                CylindricalRepresentation, FunctionTransform,  \
+                                ITRS, PhysicsSphericalRepresentation,          \
+                                RepresentationMapping, TimeAttribute,          \
+                                frame_transform_graph
 
 __all__ = ["ENU"]
 
@@ -35,17 +38,13 @@ class ENU(BaseCoordinateFrame):
     default_representation = CartesianRepresentation
 
     location = Attribute(default=None)
-    """The origin of the ENU frame"""
+    """The origin of the local frame"""
+
+    orientation = Attribute(default=("E", "N", "U"))
+    """The orientation of the local frame"""
 
     equinox = TimeAttribute(default="B1950")
     obstime = TimeAttribute(default=None, secondary_attribute="equinox")
-
-
-    frame_specific_representation_info = {
-        CartesianRepresentation: [
-            RepresentationMapping("x", "x"),
-            RepresentationMapping("y", "y"),
-            RepresentationMapping("z", "z")]}
 
 
     def __init__(self, *args, **kwargs):
@@ -55,9 +54,25 @@ class ENU(BaseCoordinateFrame):
         itrs = self._location.itrs
         geo = itrs.represent_as(GeodeticRepresentation)
         latitude, longitude = geo.latitude / u.deg, geo.longitude / u.deg
-        ux = turtle.ecef_from_horizontal(latitude, longitude, 90, 0)
-        uy = turtle.ecef_from_horizontal(latitude, longitude, 0, 90)
-        uz = turtle.ecef_from_horizontal(latitude, longitude, 0, 90)
+
+        def vector(tag):
+            tag = tag[0].upper()
+            if tag == "E":
+                return turtle.ecef_from_horizontal(latitude, longitude, 90, 0)
+            elif tag == "W":
+                return turtle.ecef_from_horizontal(latitude, longitude, 270, 0)
+            elif tag == "N":
+                return turtle.ecef_from_horizontal(latitude, longitude, 0,  0)
+            elif tag == "S":
+                return turtle.ecef_from_horizontal(latitude, longitude, 180,  0)
+            elif tag == "U":
+                return turtle.ecef_from_horizontal(latitude, longitude, 0, 90)
+            elif tag == "D":
+                return turtle.ecef_from_horizontal(latitude, longitude, 0, -90)
+
+        ux = vector(self._orientation[0])
+        uy = vector(self._orientation[1])
+        uz = vector(self._orientation[2])
 
         self._basis = numpy.column_stack((ux, uy, uz))
         self._origin = itrs.cartesian
@@ -67,10 +82,10 @@ class ENU(BaseCoordinateFrame):
 def itrs_to_enu(itrs, enu):
     """Compute the transformation from ITRS to ENU coordinates"""
     c = itrs.cartesian
-    c.x -= enu._origin.x
-    c.y -= enu._origin.y
-    c.z -= enu._origin.z
-    r = c.transform(self._basis)
+    c._x -= enu._origin.x
+    c._y -= enu._origin.y
+    c._z -= enu._origin.z
+    r = c.transform(enu._basis.T)
 
     return enu.realize_frame(r)
 
@@ -78,8 +93,10 @@ def itrs_to_enu(itrs, enu):
 @frame_transform_graph.transform(FunctionTransform, ENU, ITRS)
 def enu_to_itrs(enu, itrs):
     """Compute the transformation from ENU to ITRS coordinates"""
-    r = enu.cartesian.transform(enu._basis.T)
-    r = CartesianRepresentation(x = r.x + enu._origin.x,
-        y = r.y + enu._origin.y, z = r.z + enu._origin.z)
+    r = enu.cartesian.transform(enu._basis)
+    r._x += enu._origin.x
+    r._y += enu._origin.y
+    r._z += enu._origin.z
+    r = CartesianRepresentation(r.x, r.y, r.z)
 
     return itrs.realize_frame(r)
