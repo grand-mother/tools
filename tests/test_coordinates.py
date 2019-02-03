@@ -5,7 +5,8 @@ Unit tests for the tools.coordinates module
 
 import unittest
 
-from tools.coordinates import ENU, GeodeticRepresentation
+from tools.coordinates import ENU, GeodeticRepresentation,                     \
+                              HorizontalRepresentation
 
 import numpy
 import astropy.units as u
@@ -67,6 +68,26 @@ class CoordinatesTest(unittest.TestCase):
             self.assertQuantity(r.x[i], cart.x[i], u.m, 6)
             self.assertQuantity(r.y[i], cart.y[i], u.m, 6)
             self.assertQuantity(r.z[i], cart.z[i], u.m, 6)
+
+
+    def test_horizontal(self):
+        for (angle, point) in (((90, 0), (1, 0, 0)),
+                               (( 0, 0), (0, 1, 0)),
+                               (( 0, 90), (0, 0, 1)),
+                               (( -90, 0), (-1, 0, 0))):
+            h = HorizontalRepresentation(azimuth=angle[0] * u.deg,
+                                         elevation=angle[1] * u.deg)
+            cart = h.represent_as(CartesianRepresentation)
+
+            self.assertQuantity(cart.x, point[0], u.one, 9)
+            self.assertQuantity(cart.y, point[1], u.one, 9)
+            self.assertQuantity(cart.z, point[2], u.one, 9)
+
+            cart = CartesianRepresentation(*point)
+            h = cart.represent_as(HorizontalRepresentation)
+
+            self.assertQuantity(h.azimuth, angle[0] * u.deg, u.deg, 7)
+            self.assertQuantity(h.elevation, angle[1] * u.deg, u.deg, 7)
 
 
     def test_enu(self):
@@ -132,12 +153,19 @@ class CoordinatesTest(unittest.TestCase):
             self.assertQuantity(itrs0.z, itrs1.z, u.m, 4)
 
         # Check the unit vector case
-        enu = ENU(x=0, y=0, z=1, location=location)
+        uy = HorizontalRepresentation(azimuth = 0 * u.deg,
+                                      elevation = 0 * u.deg)
+        enu = ENU(uy, location=location)
+
+        self.assertQuantity(enu.x, 0, u.one, 9)
+        self.assertQuantity(enu.y, 1, u.one, 9)
+        self.assertQuantity(enu.z, 0, u.one, 9)
+
         r = enu.transform_to(ITRS)
 
         self.assertQuantity(r.cartesian.norm(), 1, u.one, 6)
 
-        itrs = ITRS(x=0, y=0, z=1)
+        itrs = ITRS(uy)
         enu = ENU(location=location)
         enu = itrs.transform_to(enu)
 

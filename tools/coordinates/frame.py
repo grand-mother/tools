@@ -30,6 +30,9 @@ from astropy.coordinates import Attribute, BaseCoordinateFrame,                \
                                 ITRS, PhysicsSphericalRepresentation,          \
                                 RepresentationMapping, TimeAttribute,          \
                                 frame_transform_graph
+from astropy.coordinates.builtin_frames.utils import DEFAULT_OBSTIME
+
+
 
 __all__ = ["ENU"]
 
@@ -43,8 +46,8 @@ class ENU(BaseCoordinateFrame):
     orientation = Attribute(default=("E", "N", "U"))
     """The orientation of the local frame"""
 
-    equinox = TimeAttribute(default="B1950")
-    obstime = TimeAttribute(default=None, secondary_attribute="equinox")
+    obstime = TimeAttribute(default=DEFAULT_OBSTIME)
+    """Observation time"""
 
 
     def __init__(self, *args, **kwargs):

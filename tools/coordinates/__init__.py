@@ -19,6 +19,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
 from .frame import ENU
-from .representation import GeodeticRepresentation
+from .representation import GeodeticRepresentation, HorizontalRepresentation
 
-__all__ = ["ENU", "GeodeticRepresentation"]
+__all__ = ["ENU", "GeodeticRepresentation", "HorizontalRepresentation"]
