@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Run all unit tests for the tools package
+Run all unit tests for the grand_tools package
 """
 import os
 import unittest

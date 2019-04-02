@@ -1,6 +1,6 @@
 [run]
 branch = True
-include = */tools/*.py
+include = */grand_tools/*.py
 
 [report]
 exclude_lines =

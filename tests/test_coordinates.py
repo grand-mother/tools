@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-Unit tests for the tools.coordinates module
+Unit tests for the grand_tools.coordinates module
 """
 
 import unittest
 
-from tools.coordinates import ENU, GeodeticRepresentation,                     \
-                              HorizontalRepresentation
+from grand_tools.coordinates import ENU, GeodeticRepresentation,               \
+                                    HorizontalRepresentation
 
 import numpy
 import astropy.units as u

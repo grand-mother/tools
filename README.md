@@ -11,8 +11,7 @@
 [![PyPi version](https://img.shields.io/pypi/v/grand-tools.svg)](https://pypi.org/project/grand-tools)
 
 # Tools
-_Generic tools (topographic transformations, data encapsulation, astronomical
-conversion)_
+_Common tools for GRAND packages_
 
 ## Description
 
@@ -21,7 +20,7 @@ conversion)_
 
 ## Installation
 
-_GRAND packages require python3.7. If can be installed from the
+_GRAND packages require python3.7. It can be installed from the
 [tarball](https://www.python.org/downloads) on Linux or with brew on OSX._
 
 The latest stable version of this package can be installed from [PyPi][PYPI]

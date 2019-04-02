@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from .representation import GeodeticRepresentation 
 
-from shared_libs import turtle
+from grand_libs import turtle
 
 import numpy
 import astropy.units as u
