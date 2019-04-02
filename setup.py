@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from framework import setup_package
+from grand_pkg import setup_package
 
 
 # The package version
 MAJOR = 0
-MINOR = 0
+MINOR = 1
 MICRO = 0
 
 
@@ -13,7 +13,7 @@ MICRO = 0
 # classifiers, see:
 #     https://pypi.org/pypi?%3Aaction=list_classifiers
 EXTRA_CLASSIFIERS = (
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
 )
 
 
@@ -25,9 +25,7 @@ if __name__ == "__main__":
         # Vanilla setuptools.setup arguments can be added below,
         # e.g. `entry_points` for executables or `data_files`
         install_requires = (
-            "grand-shared-libs>=0.0.0",
-            "astropy>=3.0.0"),
-        dependency_links = (
-            "git+https://github.com/grand-mother/framework-example.git@master",)
+            "grand-libs>=0.1.2",
+            "astropy>=3.0.0")
     )
 

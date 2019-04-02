@@ -7,7 +7,7 @@ import unittest
 import sys
 
 import tools
-from framework import git
+from grand_pkg import git
 
 
 try:

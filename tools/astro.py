@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Common framework for GRAND packages
+Common tools for GRAND packages
 
 Copyright (C) 2018 The GRAND collaboration
 
