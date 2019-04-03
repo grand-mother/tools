@@ -128,7 +128,7 @@ def itrs_to_enu(itrs, enu):
         The ENU frame with transformed coordinates
     """
     c = itrs.cartesian
-    if c.x.unit is not u.one:
+    if c.x.unit.is_equivalent("m"):
         c._x -= enu._origin.x
         c._y -= enu._origin.y
         c._z -= enu._origin.z
@@ -154,7 +154,7 @@ def enu_to_itrs(enu, itrs):
         The ITRS frame with transformed coordinates
     """
     r = enu.cartesian.transform(enu._basis)
-    if r.x.unit is not u.one:
+    if r.x.unit.is_equivalent("m"):
         r._x += enu._origin.x
         r._y += enu._origin.y
         r._z += enu._origin.z

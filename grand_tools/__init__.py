@@ -27,4 +27,4 @@ except ImportError:
     __git__ = {}
 
 # Initialise the package below
-from . import astro
+from . import astro, geomagnet
