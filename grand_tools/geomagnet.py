@@ -53,12 +53,14 @@ class Geomagnet:
             self._date = date
 
         # Compute the geodetic coordinates
-        cart = coordinates.transform_to(ITRS).cartesian
+        cart = coordinates.transform_to(
+            ITRS(obstime=coordinates.obstime)).cartesian
         geodetic = cart.represent_as(GeodeticRepresentation)
 
         # Fetch the magnetic field components in local ENU
-        field = self._snapshot(geodetic.latitude, geodetic.longitude,
-                               geodetic.height)
+        field = self._snapshot(geodetic.latitude / u.deg,
+                               geodetic.longitude / u.deg,
+                               geodetic.height / u.m)
 
         # Encapsulate the result
         n = geodetic.latitude.size

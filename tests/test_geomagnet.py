@@ -50,7 +50,6 @@ class GeomagnetTest(unittest.TestCase):
         # Test the initialisation
         model = "IGRF12"
         self.assertEqual(grand_tools.geomagnet.model(), model)
-        self.assertEqual(grand_tools.geomagnet._default_magnet, None)
 
         # Test the default field getter
         c = self.get_coordinates()

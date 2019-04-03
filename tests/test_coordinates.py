@@ -93,6 +93,7 @@ class CoordinatesTest(unittest.TestCase):
     def test_enu(self):
         settings = {"lat" : 45.0 * u.deg, "lon" : 3.0 * u.deg,
                     "height" : 1000. * u.m}
+        obstime = "2019-01-01"
         location = EarthLocation(**settings)
         itrs = location.itrs
 
@@ -119,13 +120,13 @@ class CoordinatesTest(unittest.TestCase):
             cart = CartesianRepresentation(x=point[1], y=point[0], z=point[2],
                                            unit=u.m)
             altaz = SkyCoord(cart, frame="altaz", location=location,
-                             obstime="2019-01-01")
-            itrs0 = altaz.transform_to(ITRS)
+                             obstime=obstime)
+            itrs0 = altaz.transform_to(ITRS(obstime=obstime))
 
             cart = CartesianRepresentation(x=point[0], y=point[1], z=point[2],
                                            unit=u.m)
             enu = ENU(cart, location=location)
-            itrs1 = enu.transform_to(ITRS)
+            itrs1 = enu.transform_to(ITRS(obstime=obstime))
 
             self.assertQuantity(itrs0.x, itrs1.x, u.m, 4)
             self.assertQuantity(itrs0.y, itrs1.y, u.m, 4)
@@ -136,8 +137,8 @@ class CoordinatesTest(unittest.TestCase):
         cart = CartesianRepresentation(x=point[0], y=point[1], z=point[2],
                                        unit=u.m)
         altaz = SkyCoord(cart, frame="altaz", location=location,
-                         obstime="2019-01-01")
-        itrs0 = altaz.transform_to(ITRS)
+                         obstime=obstime)
+        itrs0 = altaz.transform_to(ITRS(obstime=obstime))
 
         for (orientation, sign) in ((("N", "E", "U"), (1, 1, 1)),
                                     (("N", "E", "D"), (1, 1, -1)),
@@ -146,7 +147,7 @@ class CoordinatesTest(unittest.TestCase):
             cart = CartesianRepresentation(x=sign[0] * point[0],
                 y=sign[1] * point[1], z=sign[2] * point[2], unit=u.m)
             enu = ENU(cart, location=location, orientation=orientation)
-            itrs1 = enu.transform_to(ITRS)
+            itrs1 = enu.transform_to(ITRS(obstime=obstime))
 
             self.assertQuantity(itrs0.x, itrs1.x, u.m, 4)
             self.assertQuantity(itrs0.y, itrs1.y, u.m, 4)
@@ -170,6 +171,15 @@ class CoordinatesTest(unittest.TestCase):
         enu = itrs.transform_to(enu)
 
         self.assertQuantity(enu.cartesian.norm(), 1, u.one, 6)
+
+        # Check the magnetic north case
+        enu0 = ENU(uy, location=location, obstime=obstime)
+        frame = ENU(location=location, obstime=obstime, magnetic=True)
+        itrs = enu0.transform_to(ITRS(obstime=obstime))
+        enu1 = itrs.transform_to(frame)
+
+        declination = numpy.arcsin(enu0.cartesian.cross(enu1.cartesian).norm())
+        self.assertQuantity(declination.to(u.deg), 1.11 * u.deg, u.deg, 2)
 
 
 if __name__ == "__main__":

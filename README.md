@@ -4,10 +4,10 @@
     One should edit the docs/README.md file instead.
 -->
 
-[![Coding style](https://img.shields.io/badge/pep8-81%25-green.svg)](https://github.com/grand-mother/tools/blob/master/docs/.grand-pkg.json)
+[![Coding style](https://img.shields.io/badge/pep8-86%25-brightgreen.svg)](https://github.com/grand-mother/tools/blob/master/docs/.grand-pkg.json)
 [![Code coverage](https://codecov.io/gh/grand-mother/tools/branch/master/graph/badge.svg)](https://codecov.io/gh/grand-mother/tools)
 [![Build status](https://travis-ci.com/grand-mother/tools.svg?branch=master)](https://travis-ci.com/grand-mother/tools)
-[![Documentation](https://img.shields.io/badge/docs-90%25-brightgreen.svg)](https://grand-mother.github.io/site/reports.html?tools/docs)
+[![Documentation](https://img.shields.io/badge/docs-85%25-brightgreen.svg)](https://grand-mother.github.io/site/reports.html?tools/docs)
 [![PyPi version](https://img.shields.io/pypi/v/grand-tools.svg)](https://pypi.org/project/grand-tools)
 
 # Tools

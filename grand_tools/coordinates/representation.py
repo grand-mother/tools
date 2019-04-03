@@ -149,8 +149,8 @@ class HorizontalRepresentation(BaseRepresentation):
         ValueError
             The cartesian representation is not dimensioneless
         """
-        if ((cart.x.unit is not u.one) or (cart.y.unit is not u.one) or
-            (cart.z.unit is not u.one)):
+        if ((cart.x.unit != u.one) or (cart.y.unit != u.one) or
+            (cart.z.unit != u.one)):
             raise ValueError("coordinates must be dimensionless")
 
         rho = numpy.sqrt(cart.x**2 + cart.y**2)
