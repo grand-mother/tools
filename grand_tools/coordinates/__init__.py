@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
-from .frame import ENU
+from .frame import ECEF, ENU
 from .representation import GeodeticRepresentation, HorizontalRepresentation
 
-__all__ = ["ENU", "GeodeticRepresentation", "HorizontalRepresentation"]
+__all__ = ["ECEF", "ENU", "GeodeticRepresentation", "HorizontalRepresentation"]

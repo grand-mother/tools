@@ -37,14 +37,15 @@ class GeomagnetTest(unittest.TestCase):
         self.assertAlmostEqual((field.y / u.T).value, self.ref[1], tol)
         self.assertAlmostEqual((field.z / u.T).value, self.ref[2], tol)
 
-    def get_coordinates(self, n=1):
+    def get_coordinates(self, n=1, obstime=True):
+        obstime = self.date if obstime else None
         if n == 1:
             return ENU(x=0 * u.m, y=0 * u.m, z=0 * u.m, location=self.location,
-                       obstime=self.date)
+                       obstime=obstime)
         else:
             zero = n * (0 * u.m,)
             return ENU(x=zero, y=zero, z=zero, location=self.location,
-                       obstime=self.date)
+                       obstime=obstime)
 
     def test_default(self):
         # Test the initialisation
@@ -69,6 +70,13 @@ class GeomagnetTest(unittest.TestCase):
             enu = value.transform_to(frame)
             self.assertField(enu)
 
+        # Test the getter from ITRS
+        itrs = ITRS(self.location.itrs.cartesian, obstime=self.date)
+        field = grand_tools.geomagnet.field(itrs)
+        self.assertEqual(field.x.size, 1)
+        self.assertEqual(c.obstime, field.obstime)
+        self.assertField(field)
+
 
     def test_custom(self):
         magnet = Geomagnet(model="WMM2015")
@@ -77,6 +85,13 @@ class GeomagnetTest(unittest.TestCase):
         self.assertEqual(field.x.size, 1)
         self.assertEqual(c.obstime, field.obstime)
         self.assertField(field)
+
+
+    def test_error(self):
+        c = self.get_coordinates(obstime=False)
+        with self.assertRaises(ValueError) as context:
+            grand_tools.geomagnet.field(c)
+        self.assertRegex(context.exception.args[0], "^No observation time")
 
 
 if __name__ == "__main__":

@@ -19,12 +19,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
 from grand_libs.gull import Snapshot as _Snapshot
-from grand_tools.coordinates import ENU, GeodeticRepresentation
+from grand_tools.coordinates import ECEF, ENU, GeodeticRepresentation
 
 import numpy
 
 import astropy.units as u
-from astropy.coordinates import EarthLocation, ITRS
+from astropy.coordinates import EarthLocation
 
 
 _DEFAULT_MODEL = "IGRF12"
@@ -45,16 +45,25 @@ class Geomagnet:
         self._date = None
 
     def __call__(self, coordinates):
+        """
+        Raises
+        ------
+        ValueError
+            The provided coordinates are not valid
+        """
 
         # Update the snapshot, if needed
-        date = coordinates.obstime.datetime.date()
+        obstime = coordinates.obstime
+        if obstime is None:
+            raise ValueError(
+                "No observation time was specified for the coordinates")
+        date = obstime.datetime.date()
         if date != self._date:
             self._snapshot = _Snapshot(self._model, date)
             self._date = date
 
         # Compute the geodetic coordinates
-        cart = coordinates.transform_to(
-            ITRS(obstime=coordinates.obstime)).cartesian
+        cart = coordinates.transform_to(ECEF).cartesian
         geodetic = cart.represent_as(GeodeticRepresentation)
 
         # Fetch the magnetic field components in local ENU
@@ -69,20 +78,20 @@ class Geomagnet:
                                      lon=geodetic.longitude,
                                      height=geodetic.height)
             return ENU(x=field[0] * u.T, y=field[1] * u.T, z=field[2] * u.T,
-                       location=location, obstime=coordinates.obstime)
+                       location=location, obstime=obstime)
         else:
-            itrs = numpy.zeros((n, 3))
+            ecef = numpy.zeros((n, 3))
             for i, value in enumerate(field):
                 location = EarthLocation(lat=geodetic.latitude[i],
                                          lon=geodetic.longitude[i],
                                          height=geodetic.height[i])
                 enu = ENU(x=value[0], y=value[1], z=value[2], location=location)
-                c = enu.transform_to(ITRS).cartesian
-                itrs[i,0] = c.x
-                itrs[i,1] = c.y
-                itrs[i,2] = c.z
-            return ITRS(x=itrs[:,0] * u.T, y=itrs[:,1] * u.T, z=itrs[:,2] * u.T,
-                        obstime=coordinates.obstime)
+                c = enu.transform_to(ECEF).cartesian
+                ecef[i,0] = c.x
+                ecef[i,1] = c.y
+                ecef[i,2] = c.z
+            return ECEF(x=ecef[:,0] * u.T, y=ecef[:,1] * u.T, z=ecef[:,2] * u.T,
+                        obstime=obstime)
 
 
 def field(coordinates):
