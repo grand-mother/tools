@@ -18,12 +18,12 @@ You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
+from .coordinates import ECEF, ENU, GeodeticRepresentation
 from grand_libs.gull import Snapshot as _Snapshot
-from grand_tools.coordinates import ECEF, ENU, GeodeticRepresentation
-
-import numpy
 
 import astropy.units as u
+import numpy
+
 from astropy.coordinates import EarthLocation
 
 

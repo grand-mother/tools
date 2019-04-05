@@ -38,7 +38,7 @@ class GeodeticRepresentation(BaseRepresentation):
     """Attributes of a Geodetic representation"""
 
 
-    def __init__(self, latitude, longitude, height, copy=True):
+    def __init__(self, latitude, longitude, height=0, copy=True):
         """Initialise a geodetic representation
 
         Parameters

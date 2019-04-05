@@ -26,5 +26,14 @@ except ImportError:
     __version__ = None
     __git__ = {}
 
-# Initialise the package below
-from . import astro, geomagnet
+import os
+
+
+# Initialise the package globals
+DATADIR = os.path.join(os.path.dirname(__file__), "data")
+"""Path to the package data"""
+
+
+from . import astro, geomagnet, topography
+
+__all__ = ["DATADIR", "astro", "geomagnet", "topography"]

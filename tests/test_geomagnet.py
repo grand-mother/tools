@@ -56,6 +56,9 @@ class GeomagnetTest(unittest.TestCase):
         c = self.get_coordinates()
         field = grand_tools.geomagnet.field(c)
         self.assertEqual(field.x.size, 1)
+        self.assertEqual(field.x.unit, u.T)
+        self.assertEqual(field.y.unit, u.T)
+        self.assertEqual(field.z.unit, u.T)
         self.assertEqual(c.obstime, field.obstime)
         self.assertField(field)
 
@@ -66,6 +69,9 @@ class GeomagnetTest(unittest.TestCase):
         self.assertEqual(field.x.size, n)
         self.assertEqual(c.obstime, field.obstime)
         for value in field:
+            self.assertEqual(field.x.unit, u.T)
+            self.assertEqual(field.y.unit, u.T)
+            self.assertEqual(field.z.unit, u.T)
             frame = ENU(location=self.location)
             enu = value.transform_to(frame)
             self.assertField(enu)

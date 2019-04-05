@@ -15,3 +15,6 @@ build
 
 # Ignore PyCharm stuff
 .idea
+
+# Ignore test data
+tests/topography
