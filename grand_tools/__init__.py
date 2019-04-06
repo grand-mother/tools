@@ -34,6 +34,6 @@ DATADIR = os.path.join(os.path.dirname(__file__), "data")
 """Path to the package data"""
 
 
-from . import astro, geomagnet, topography
+from . import astro
 
-__all__ = ["DATADIR", "astro", "geomagnet", "topography"]
+__all__ = ["DATADIR", "astro"]

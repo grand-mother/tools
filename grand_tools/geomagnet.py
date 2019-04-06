@@ -37,19 +37,87 @@ _default_magnet = None
 
 class Geomagnet:
     """Proxy to a geomagnetic model"""
+
     def __init__(self, model=None):
+        """Initialise a geomagnet wrapper
+
+        Alternative geomagnetic models can be instanciated with this class.
+        Instead, use the `field` function of the geomagnet module in order to
+        get the GRAND standard geomagnetic model.
+
+        Parameters
+        ----------
+        model : str, optional
+            The geomagnetic model (defaults to "IGRF12")
+
+        Raises
+        ------
+        grand_libs.gull.LibraryError
+            The requested model is not valid / available
+
+        Notes
+        -----
+        In order to get the geomagnetic field from the default GRAND model
+        (IGRF12), one should **not** directly instantiate this class.  Instead
+        one should use the `field` function of the geomagnet module.  This class
+        is only meant to be used for studies of the impact of alternative
+        models.
+
+        Supported models are:
+          1. [IGRF12](https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html)
+          2. [WMM2015](http://www.geomag.bgs.ac.uk/research/modelling/WorldMagneticModel.html)
+
+        Examples
+        --------
+        ```
+        >>> from grand_tools.geomagnet import Geomagnet
+
+        >>> geomagnet = Geomagnet("WWM2015")
+
+        ```
+        """
         if model is None:
             model = _DEFAULT_MODEL
         self._model = model
         self._snapshot = None
         self._date = None
 
-    def __call__(self, coordinates):
+    def field(self, coordinates):
         """
+        Get the geo-magnetic field components
+
+        This method accepts vectorized input. The frame of the returned value
+        depends on the input size. If a single point is provided the magnetic
+        field is returned in local ENU coordinates, centered on the point.
+        Otherwise the components are given in ECEF.
+
+        Parameters
+        ----------
+        coordinates : ECEF or ENU
+            The coordinates of points where the magnetic field is requested
+
+        Returns
+        -------
+        ECEF or ENU
+            The magnetic field components at the given point(s)
+
         Raises
         ------
         ValueError
             The provided coordinates are not valid
+
+        Examples
+        --------
+        ```
+        >>> from grand_tools.coordinates import ECEF
+        >>> from grand_tools.geomagnet import Geomagnet
+
+        >>> geomagnet = Geomagnet()
+        >>> coordinates = ECEF(representation_type="geodetic", latitude=45,
+        ...                    longitude=3, obstime="2019-01-01")
+        >>> field = geomagnet.field(coordinates)
+
+        ```
         """
 
         # Update the snapshot, if needed
@@ -95,14 +163,66 @@ class Geomagnet:
 
 
 def field(coordinates):
-    """Get the geo-magnetic field"""
+    """Get the geo-magnetic field
+
+    This method accepts vectorized input. The frame of the returned value
+    depends on the input size. If a single point is provided the magnetic
+    field is returned in local ENU coordinates, centered on the point.
+    Otherwise the components are given in ECEF.
+
+    Parameters
+    ----------
+    coordinates : ECEF or ENU
+        The coordinates of points where the magnetic field is requested
+
+    Returns
+    -------
+    ECEF or ENU
+        The magnetic field components at the given point(s)
+
+    Raises
+    ------
+    ValueError
+        The provided coordinates are not valid
+
+    Examples
+    --------
+    ```
+    >>> from grand_tools.coordinates import ECEF
+    >>> from grand_tools import geomagnet
+
+    >>> coordinates = ECEF(representation_type="geodetic", latitude=45,
+    ...                    longitude=3, obstime="2019-01-01")
+    >>> field = geomagnet.field(coordinates)
+
+    ```
+    """
     global _default_magnet
 
     if _default_magnet is None:
         _default_magnet = Geomagnet()
-    return _default_magnet(coordinates)
+    return _default_magnet.field(coordinates)
 
 
 def model():
-    """Get the default model for the geo-magnetic field"""
+    """Get the default model for the geo-magnetic field
+
+    Currently the default geomagnetic model used in GRAND is
+    [IGRF12](https://www.ngdc.noaa.gov/IAGA/vmod/igrf.html).
+
+    Returns
+    -------
+    str
+        The name of the default model
+
+    Examples
+    --------
+    ```
+    >>> from grand_tools import geomagnet
+
+    >>> geomagnet.model()
+    'IGRF12'
+
+    ```
+    """
     return _DEFAULT_MODEL

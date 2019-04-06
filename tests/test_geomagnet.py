@@ -85,9 +85,9 @@ class GeomagnetTest(unittest.TestCase):
 
 
     def test_custom(self):
-        magnet = Geomagnet(model="WMM2015")
+        geomagnet = Geomagnet(model="WMM2015")
         c = self.get_coordinates()
-        field = magnet(c)
+        field = geomagnet.field(c)
         self.assertEqual(field.x.size, 1)
         self.assertEqual(c.obstime, field.obstime)
         self.assertField(field)

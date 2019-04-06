@@ -73,7 +73,7 @@ def itrs_to_ecef(itrs, ecef):
     ----------
     itrs : ITRS
         The initial coordinates in ITRS
-    enu : ECEF
+    ecef : ECEF
         The ECEF frame to transform to
 
     Returns
