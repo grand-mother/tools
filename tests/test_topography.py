@@ -29,19 +29,23 @@ class TopographyTest(unittest.TestCase):
 
     def test_topography(self):
         # Fetch a test tile
-        dirname, basename = "tests/topography", "N38E083.SRTMGL1.hgt"
+        dirname, basename = "tests/topography", "N39E092.SRTMGL1.hgt"
         path = os.path.join(dirname, basename)
         if not os.path.exists(path):
-            os.makedirs("tests/topography")
+            try:
+                os.makedirs(dirname)
+            except OSError:
+                pass
             with open(path, "wb") as f:
                 f.write(grand_store.get(basename))
 
         # Test the topography getter
-        topo = Topography("topography")
-        c = ECEF(GeodeticRepresentation(latitude=38.5, longitude=83.5))
+        topo = Topography(dirname)
+        c = ECEF(GeodeticRepresentation(latitude=39.5, longitude=92.5))
         z = topo.elevation(c)
         self.assertEqual(z.size, 1)
         self.assertEqual(z.unit, u.m)
+        self.assertFalse(numpy.isnan(z))
 
 
 if __name__ == "__main__":

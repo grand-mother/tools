@@ -33,7 +33,34 @@ _geoid = None
 
 
 def geoid_undulation(coordinates):
-    """Get the geoid undulation"""
+    """Get the geoid undulation
+
+    This method accepts vectorized input. The returned value is in unit
+    `astropy.Unit.m`.
+
+    Parameters
+    ----------
+    coordinates : ECEF or ENU
+        The coordinates of points where the undulation is requested
+
+    Returns
+    -------
+    astropy.Quantity
+        The geoid undulation at the given point(s)
+
+
+    Examples
+    --------
+    ```
+    >>> from grand_tools.coordinates import ECEF
+    >>> from grand_tools import topography
+
+    >>> coordinates = ECEF(representation_type="geodetic", latitude=45,
+    ...                    longitude=3, obstime="2019-01-01")
+    >>> undulation = topography.geoid_undulation(coordinates)
+
+    ```
+    """
 
     global _geoid
 
@@ -53,17 +80,71 @@ def geoid_undulation(coordinates):
 class Topography:
     """Proxy to topography data"""
 
-    def __init__(self, path=None):
-        if path is None:
-            path = _DEFAULT_PATH
+    def __init__(self, path):
+        """Initialise a topography wrapper
+
+        Alternative geomagnetic models can be instanciated with this class.
+        Instead, use the `field` function of the geomagnet module in order to
+        get the GRAND standard geomagnetic model.
+
+        Parameters
+        ----------
+        path : str
+            Path to the topography data
+
+        Raises
+        ------
+        grand_libs.turtle.LibraryError
+            The provided data are not valid / available
+
+        Examples
+        --------
+        ```
+        >>> from grand_tools.topography import Topography
+
+        >>> topography = Topography("SRTMGL1")
+
+        ```
+        """
         self._stack = _Stack(path)
 
+
     def elevation(self, coordinates):
+        """
+        Get the topography elevation, w.r.t. sea level
+
+        This method accepts vectorized input. The returned value is in unit
+        `astropy.Unit.m`.
+
+        Parameters
+        ----------
+        coordinates : ECEF or ENU
+            The coordinates of points where the elevation is requested
+
+        Returns
+        -------
+        astropy.Quantity
+            The topography elevation at the given point(s)
+
+
+        Examples
+        --------
+        ```
+        >>> from grand_tools.coordinates import ECEF
+        >>> from grand_tools.topography import Topography
+
+        >>> topography = Topography("SRTMGL1")
+        >>> coordinates = ECEF(representation_type="geodetic", latitude=45,
+        ...                    longitude=3, obstime="2019-01-01")
+        >>> elevation = topography.elevation(coordinates)
+
+        ```
+        """
         # Compute the geodetic coordinates
         cart = coordinates.transform_to(ECEF).cartesian
         geodetic = cart.represent_as(GeodeticRepresentation)
 
         # Return the topography elevation
-        z = self._stack.elevation((geodetic.longitude / u.deg).value,
-                                  (geodetic.latitude / u.deg).value)
+        z = self._stack.elevation((geodetic.latitude / u.deg).value,
+                                  (geodetic.longitude / u.deg).value)
         return z * u.m
